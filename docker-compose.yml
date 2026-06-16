@@ -1,0 +1,39 @@
+services:
+  view-office:
+    build: .
+    image: view-office:local
+    container_name: view-office
+    environment:
+      PORT: "3000"
+      DATA_DIR: /data
+      PUBLIC_URL: http://localhost:3000
+      WOPI_PUBLIC_URL: http://localhost:3000
+      COLLABORA_INTERNAL_URL: http://127.0.0.1:9980
+      COLLABORA_PUBLIC_URL: http://localhost:9980
+      aliasgroup1: http://localhost:3000
+      username: admin
+      password: admin
+      COLLABORA_MEMPROPORTION: "95.0"
+      COLLABORA_LOAD_TIMEOUT_SECS: "600"
+      COLLABORA_CONVERT_TIMEOUT_SECS: "600"
+      COLLABORA_CONNECTION_TIMEOUT_SECS: "120"
+      COLLABORA_WOPI_MAX_FILE_SIZE: "0"
+      COLLABORA_PER_DOCUMENT_MAX_FILE_SIZE_MB: "0"
+      COLLABORA_PER_DOCUMENT_MAX_VIRT_MEM_MB: "0"
+      COLLABORA_BAD_DOC_MEMORY_MB: "8192"
+      extra_params: >-
+        --o:ssl.enable=false
+        --o:ssl.termination=false
+        --o:welcome.enable=false
+        --o:net.frame_ancestors=*
+        --o:net.post_allow.host[0]=.*
+    ports:
+      - "3000:3000"
+      - "9980:9980"
+    volumes:
+      - preview-data:/data
+    cap_add:
+      - MKNOD
+
+volumes:
+  preview-data:

@@ -1,0 +1,158 @@
+/* Minimal embedded preview mode: keep only the rendered document surface. */
+html body nav.main-nav,
+html body nav.main-nav.readonly,
+html body .main-nav,
+html body .main-nav.readonly,
+html body #content-keeper,
+html body #main-menu,
+html body #document-titlebar,
+html body #viewMode,
+html body #userListHeader,
+html body #closebuttonwrapper,
+html body #toolbar-wrapper,
+html body #toolbar-search,
+html body #mobile-edit-button,
+html body #mobile-wizard,
+html body #iframe-feedback,
+html body .iframe-feedback-modal,
+html body .iframe-feedback-wrap,
+html body #navigation-sidebar,
+html body #navigator-floating-icon,
+html body #sidebar-dock-wrapper,
+html body #aichat-dock-wrapper,
+#content-keeper,
+#main-menu,
+#document-titlebar,
+#viewMode,
+#userListHeader,
+#closebuttonwrapper,
+#toolbar-wrapper,
+#toolbar-search,
+#mobile-edit-button,
+#mobile-wizard,
+#iframe-feedback,
+.iframe-feedback-modal,
+.iframe-feedback-wrap,
+#navigation-sidebar,
+#navigator-floating-icon,
+#sidebar-dock-wrapper,
+#aichat-dock-wrapper {
+  display: none !important;
+}
+
+#iframe-feedback {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+html body:not([data-doctype="spreadsheet"]):not([data-docType="spreadsheet"]) #spreadsheet-toolbar {
+  display: none !important;
+}
+
+html body[data-doctype="spreadsheet"] #spreadsheet-toolbar,
+html body[data-docType="spreadsheet"] #spreadsheet-toolbar {
+  display: grid !important;
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 20 !important;
+}
+
+html body:not([data-doctype="spreadsheet"]):not([data-docType="spreadsheet"]) #toolbar-down {
+  display: flex !important;
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  z-index: 30 !important;
+  overflow: hidden !important;
+}
+
+html body[data-doctype="spreadsheet"] #toolbar-down,
+html body[data-docType="spreadsheet"] #toolbar-down {
+  display: none !important;
+}
+
+body,
+#main-document-content,
+#document-container {
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+}
+
+#main-document-content,
+#document-container {
+  position: fixed !important;
+}
+
+#document-container {
+  overflow: auto !important;
+}
+
+#map,
+.leaflet-container,
+.leaflet-map-pane,
+.leaflet-canvas-container {
+  margin: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+html body[data-doctype="spreadsheet"] #document-container,
+html body[data-docType="spreadsheet"] #document-container {
+  bottom: 40px !important;
+  height: calc(100vh - 40px) !important;
+}
+
+html body:not([data-doctype="spreadsheet"]):not([data-docType="spreadsheet"]) #document-container {
+  bottom: 34px !important;
+  height: calc(100vh - 34px) !important;
+}
+
+html.vo-no-logo .leaflet-progress-spinner::before {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  background: none !important;
+}
+
+html.vo-has-logo .leaflet-progress-spinner::before {
+  width: 100% !important;
+  height: 72px !important;
+  margin: 0 0 12px !important;
+  background: var(--vo-spinner-logo) no-repeat center / contain !important;
+}
+
+.leaflet-progress-layer {
+  min-width: 260px !important;
+  max-width: min(420px, calc(100vw - 48px)) !important;
+  padding: 24px 28px !important;
+  border-radius: 6px !important;
+  box-shadow: 0 16px 48px rgba(15, 23, 42, 0.14) !important;
+}
+
+.leaflet-progress-label {
+  color: #1f2937 !important;
+  font: 14px/1.7 var(--cool-font, Arial, sans-serif) !important;
+}
+
+.leaflet-progress-label.brand-label {
+  margin-bottom: 4px !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+
+html.vo-no-brand .leaflet-progress-label.brand-label {
+  display: none !important;
+}

@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>View Office Preview</title>
+    <script src="/viewer-sdk.js"></script>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #f5f7fb;
+        color: #172033;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100dvh;
+      }
+
+      .app {
+        min-height: 100dvh;
+        display: grid;
+        grid-template-rows: auto 1fr;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 14px 22px;
+        background: #ffffff;
+        border-bottom: 1px solid #d9e0ea;
+      }
+
+      .brand {
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .tabs {
+        display: inline-flex;
+        padding: 3px;
+        border: 1px solid #ccd6e2;
+        border-radius: 8px;
+        background: #f7f9fc;
+      }
+
+      .tab {
+        height: 34px;
+        padding: 0 14px;
+        border: 0;
+        border-radius: 6px;
+        background: transparent;
+        color: #516070;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .tab.active {
+        background: #ffffff;
+        color: #1d4ed8;
+        box-shadow: 0 1px 4px rgba(15, 23, 42, 0.12);
+      }
+
+      .panel {
+        display: none;
+        min-height: 0;
+      }
+
+      .panel.active {
+        display: block;
+      }
+
+      .docs {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 42px 24px 64px;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: 30px;
+        line-height: 1.25;
+      }
+
+      .lead {
+        max-width: 760px;
+        margin: 0 0 28px;
+        color: #526173;
+        line-height: 1.7;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .card {
+        padding: 18px;
+        border: 1px solid #d9e0ea;
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .card h2 {
+        margin: 0 0 10px;
+        font-size: 17px;
+      }
+
+      .card p {
+        margin: 0 0 12px;
+        color: #526173;
+        line-height: 1.7;
+      }
+
+      pre {
+        overflow: auto;
+        margin: 0;
+        padding: 14px;
+        border-radius: 6px;
+        background: #0f172a;
+        color: #e5edf8;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .preview {
+        position: relative;
+        height: calc(100dvh - 63px);
+        min-height: 520px;
+        overflow: hidden;
+        background: #e8edf5;
+      }
+
+      .toolbar {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        right: 14px;
+        z-index: 5;
+        display: grid;
+        grid-template-columns: minmax(220px, 1fr) 110px auto auto auto;
+        gap: 10px;
+        align-items: center;
+        padding: 10px;
+        border: 1px solid rgba(203, 213, 225, 0.94);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.96);
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.13);
+      }
+
+      input,
+      select,
+      button {
+        height: 38px;
+        min-width: 0;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        background: #ffffff;
+        color: #172033;
+        font: inherit;
+      }
+
+      input,
+      select {
+        padding: 0 10px;
+      }
+
+      button {
+        padding: 0 14px;
+        cursor: pointer;
+        background: #2563eb;
+        border-color: #2563eb;
+        color: #ffffff;
+        font-weight: 700;
+      }
+
+      button.secondary {
+        background: #ffffff;
+        border-color: #cbd5e1;
+        color: #172033;
+      }
+
+      button.danger {
+        background: #ffffff;
+        border-color: #fecaca;
+        color: #b42318;
+      }
+
+      .viewer {
+        position: absolute;
+        inset: 0;
+        background: #e8edf5;
+      }
+
+      .vo-state {
+        display: grid;
+        place-items: center;
+        height: 100%;
+        color: #526173;
+      }
+
+      .vo-error {
+        color: #b42318;
+      }
+
+      @media (max-width: 840px) {
+        .topbar {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        .toolbar {
+          grid-template-columns: 1fr 90px;
+        }
+
+        .toolbar button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <header class="topbar">
+        <div class="brand">View Office Preview</div>
+        <nav class="tabs" aria-label="页面切换">
+          <button class="tab active" data-tab="docs">使用方法</button>
+          <button class="tab" data-tab="preview">预览文件</button>
+        </nav>
+      </header>
+
+      <section id="docsPanel" class="panel active">
+        <div class="docs">
+          <h1>Office 文件预览服务</h1>
+          <p class="lead">
+            通过文件 URL 或文件流创建预览会话，前端引用 SDK 后即可把 doc、docx、xls、xlsx、ppt、pptx、pdf、txt 等文件嵌入到业务系统中预览。
+          </p>
+
+          <div class="grid">
+            <article class="card">
+              <h2>页面引用</h2>
+              <p>把 SDK 引入业务页面，然后指定容器和文件来源。</p>
+              <pre><code id="sdkUsage"></code></pre>
+            </article>
+
+            <article class="card">
+              <h2>URL 预览</h2>
+              <p>服务端会下载 URL 文件并转交给 Collabora 预览。</p>
+              <pre><code>ViewOffice.preview({
+  container: "#viewer",
+  source: {
+    type: "url",
+    url: "https://example.com/demo.docx",
+    fileName: "demo.docx",
+    fileType: "docx"
+  }
+});</code></pre>
+            </article>
+
+            <article class="card">
+              <h2>文件流预览</h2>
+              <p>适合业务系统中用户本地上传后直接预览。</p>
+              <pre><code>ViewOffice.preview({
+  container: "#viewer",
+  source: {
+    type: "file",
+    file: file,
+    fileName: file.name,
+    fileType: file.name.split(".").pop()
+  }
+});</code></pre>
+            </article>
+
+            <article class="card">
+              <h2>文件清理</h2>
+              <p>关闭预览或创建新预览时会主动删除服务端临时文件。浏览器异常关闭时，服务端每日清理超过保留时间的文件。</p>
+              <pre><code>ViewOffice.cleanup(session);</code></pre>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="previewPanel" class="panel">
+        <div class="preview">
+          <section class="toolbar">
+            <input id="fileUrl" placeholder="输入 docx/xlsx/pptx/pdf/txt 文件地址" />
+            <select id="fileType">
+              <option value="docx">docx</option>
+              <option value="doc">doc</option>
+              <option value="xlsx">xlsx</option>
+              <option value="xls">xls</option>
+              <option value="pptx">pptx</option>
+              <option value="ppt">ppt</option>
+              <option value="pdf">pdf</option>
+              <option value="txt">txt</option>
+            </select>
+            <button id="openUrl">打开 URL</button>
+            <button class="secondary" id="pickFile">上传文件</button>
+            <button class="danger" id="closePreview">关闭预览</button>
+            <input id="fileInput" type="file" hidden />
+          </section>
+          <section id="viewer" class="viewer">
+            <div class="vo-state">输入文件地址或上传文件后开始预览</div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      var viewer = document.querySelector("#viewer");
+      var fileUrl = document.querySelector("#fileUrl");
+      var fileType = document.querySelector("#fileType");
+      var fileInput = document.querySelector("#fileInput");
+      var currentSession = null;
+
+      renderUsage();
+
+      document.querySelectorAll(".tab").forEach(function (tab) {
+        tab.addEventListener("click", function () {
+          setTab(tab.dataset.tab);
+        });
+      });
+
+      function setTab(name) {
+        document.querySelectorAll(".tab").forEach(function (tab) {
+          tab.classList.toggle("active", tab.dataset.tab === name);
+        });
+        document.querySelector("#docsPanel").classList.toggle("active", name === "docs");
+        document.querySelector("#previewPanel").classList.toggle("active", name === "preview");
+      }
+
+      document.querySelector("#openUrl").addEventListener("click", async function () {
+        var url = fileUrl.value.trim();
+        if (!url) return;
+        var name = decodeURIComponent(url.split("?")[0].split("/").pop() || "document." + fileType.value);
+        currentSession = await ViewOffice.preview({
+          container: viewer,
+          source: {
+            type: "url",
+            url: url,
+            fileName: name,
+            fileType: fileType.value
+          }
+        });
+      });
+
+      document.querySelector("#pickFile").addEventListener("click", function () {
+        fileInput.click();
+      });
+
+      fileInput.addEventListener("change", async function () {
+        var file = fileInput.files && fileInput.files[0];
+        if (!file) return;
+        currentSession = await ViewOffice.preview({
+          container: viewer,
+          source: {
+            type: "file",
+            file: file,
+            fileName: file.name,
+            fileType: file.name.split(".").pop().toLowerCase()
+          }
+        });
+        fileInput.value = "";
+      });
+
+      document.querySelector("#closePreview").addEventListener("click", function () {
+        closePreview();
+      });
+
+      window.addEventListener("pagehide", function () {
+        if (currentSession) {
+          ViewOffice.cleanup(currentSession);
+          currentSession = null;
+        }
+      });
+
+      function closePreview() {
+        if (currentSession) {
+          ViewOffice.cleanup(currentSession);
+          currentSession = null;
+        }
+        viewer.innerHTML = '<div class="vo-state">输入文件地址或上传文件后开始预览</div>';
+      }
+
+      function renderUsage() {
+        var sdkUrl = window.location.origin + "/viewer-sdk.js";
+        document.querySelector("#sdkUsage").textContent =
+          '<script src="' + sdkUrl + '"><\\/script>\\n' +
+          '<div id="viewer" style="height: 720px"></div>';
+      }
+    </script>
+  </body>
+</html>
