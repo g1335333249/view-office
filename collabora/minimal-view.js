@@ -17,7 +17,9 @@
     '#navigation-sidebar',
     '#navigator-floating-icon',
     '#sidebar-dock-wrapper',
-    '#aichat-dock-wrapper'
+    '#aichat-dock-wrapper',
+    '#presentation-controls-wrapper',
+    '#slide-sorter'
   ];
 
   function isSpreadsheet() {
@@ -151,7 +153,16 @@
       documentContainer.style.setProperty('bottom', statusHeight + 'px', 'important');
       documentContainer.style.setProperty('height', 'calc(100vh - ' + statusHeight + 'px)', 'important');
     } else if (presentation && documentContainer) {
+      documentContainer.classList.remove('parts-preview-document', 'portrait', 'landscape', 'sidebar-document');
+      ['presentation-controls-wrapper', 'slide-sorter'].forEach(function (id) {
+        var element = document.getElementById(id);
+        if (element) element.style.setProperty('display', 'none', 'important');
+      });
+      documentContainer.style.setProperty('top', '0', 'important');
+      documentContainer.style.setProperty('left', '0', 'important');
+      documentContainer.style.setProperty('right', '0', 'important');
       documentContainer.style.setProperty('bottom', '0', 'important');
+      documentContainer.style.setProperty('width', '100vw', 'important');
       documentContainer.style.setProperty('height', '100vh', 'important');
     } else if (!spreadsheet && documentContainer && document.getElementById('toolbar-down')) {
       documentContainer.style.setProperty('bottom', statusHeight + 'px', 'important');

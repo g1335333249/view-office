@@ -20,6 +20,8 @@ html body #navigation-sidebar,
 html body #navigator-floating-icon,
 html body #sidebar-dock-wrapper,
 html body #aichat-dock-wrapper,
+html body #presentation-controls-wrapper,
+html body #slide-sorter,
 #content-keeper,
 #main-menu,
 #document-titlebar,
@@ -36,7 +38,9 @@ html body #aichat-dock-wrapper,
 #navigation-sidebar,
 #navigator-floating-icon,
 #sidebar-dock-wrapper,
-#aichat-dock-wrapper {
+#aichat-dock-wrapper,
+#presentation-controls-wrapper,
+#slide-sorter {
   display: none !important;
 }
 
@@ -126,7 +130,25 @@ html body:not([data-doctype="spreadsheet"]):not([data-docType="spreadsheet"]) #d
 
 html body[data-doctype="presentation"] #document-container,
 html body[data-docType="presentation"] #document-container {
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
   bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+html body[data-doctype="presentation"] #document-container.parts-preview-document,
+html body[data-docType="presentation"] #document-container.parts-preview-document,
+html body[data-doctype="presentation"] #document-container.portrait,
+html body[data-docType="presentation"] #document-container.portrait,
+html body[data-doctype="presentation"] #document-container.landscape,
+html body[data-docType="presentation"] #document-container.landscape {
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
   height: 100vh !important;
 }
 
