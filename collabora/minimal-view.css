@@ -76,6 +76,11 @@ html body[data-docType="spreadsheet"] #toolbar-down {
   display: none !important;
 }
 
+html body[data-doctype="presentation"] #toolbar-down,
+html body[data-docType="presentation"] #toolbar-down {
+  display: none !important;
+}
+
 body,
 #main-document-content,
 #document-container {
@@ -117,6 +122,12 @@ html body[data-docType="spreadsheet"] #document-container {
 html body:not([data-doctype="spreadsheet"]):not([data-docType="spreadsheet"]) #document-container {
   bottom: 34px !important;
   height: calc(100vh - 34px) !important;
+}
+
+html body[data-doctype="presentation"] #document-container,
+html body[data-docType="presentation"] #document-container {
+  bottom: 0 !important;
+  height: 100vh !important;
 }
 
 html.vo-no-logo .leaflet-progress-spinner::before {

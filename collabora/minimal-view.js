@@ -28,6 +28,10 @@
     return bodyType === 'spreadsheet' || rootType === 'spreadsheet' || !!document.querySelector('.spreadsheet-tab');
   }
 
+  function isPresentation() {
+    return getDocType() === 'presentation';
+  }
+
   function getDocType() {
     var body = document.body;
     var root = document.documentElement;
@@ -73,11 +77,11 @@
     }
   }
 
-  function configureBottomStatusBar(spreadsheet) {
+  function configureBottomStatusBar(spreadsheet, presentation) {
     var toolbarDown = document.getElementById('toolbar-down');
     if (!toolbarDown) return;
 
-    if (spreadsheet) {
+    if (spreadsheet || presentation) {
       toolbarDown.style.setProperty('display', 'none', 'important');
       return;
     }
@@ -106,7 +110,8 @@
 
   function hideChrome() {
     var spreadsheet = isSpreadsheet();
-    var statusHeight = spreadsheet ? 40 : 34;
+    var presentation = isPresentation();
+    var statusHeight = spreadsheet ? 40 : (presentation ? 0 : 34);
 
     selectors.forEach(function (selector) {
       document.querySelectorAll(selector).forEach(function (element) {
@@ -126,7 +131,7 @@
       spreadsheetToolbar.style.setProperty('display', 'none', 'important');
     }
 
-    configureBottomStatusBar(spreadsheet);
+    configureBottomStatusBar(spreadsheet, presentation);
 
     ['main-document-content', 'document-container'].forEach(function (id) {
       var element = document.getElementById(id);
@@ -145,6 +150,9 @@
     if (spreadsheet && documentContainer) {
       documentContainer.style.setProperty('bottom', statusHeight + 'px', 'important');
       documentContainer.style.setProperty('height', 'calc(100vh - ' + statusHeight + 'px)', 'important');
+    } else if (presentation && documentContainer) {
+      documentContainer.style.setProperty('bottom', '0', 'important');
+      documentContainer.style.setProperty('height', '100vh', 'important');
     } else if (!spreadsheet && documentContainer && document.getElementById('toolbar-down')) {
       documentContainer.style.setProperty('bottom', statusHeight + 'px', 'important');
       documentContainer.style.setProperty('height', 'calc(100vh - ' + statusHeight + 'px)', 'important');
