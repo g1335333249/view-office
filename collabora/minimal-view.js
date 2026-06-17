@@ -83,7 +83,7 @@
     var toolbarDown = document.getElementById('toolbar-down');
     if (!toolbarDown) return;
 
-    if (spreadsheet || presentation) {
+    if (spreadsheet) {
       toolbarDown.style.setProperty('display', 'none', 'important');
       return;
     }
@@ -113,7 +113,7 @@
   function hideChrome() {
     var spreadsheet = isSpreadsheet();
     var presentation = isPresentation();
-    var statusHeight = spreadsheet ? 40 : (presentation ? 0 : 34);
+    var statusHeight = spreadsheet ? 40 : 34;
 
     selectors.forEach(function (selector) {
       document.querySelectorAll(selector).forEach(function (element) {
@@ -161,9 +161,9 @@
       documentContainer.style.setProperty('top', '0', 'important');
       documentContainer.style.setProperty('left', '0', 'important');
       documentContainer.style.setProperty('right', '0', 'important');
-      documentContainer.style.setProperty('bottom', '0', 'important');
+      documentContainer.style.setProperty('bottom', statusHeight + 'px', 'important');
       documentContainer.style.setProperty('width', '100vw', 'important');
-      documentContainer.style.setProperty('height', '100vh', 'important');
+      documentContainer.style.setProperty('height', 'calc(100vh - ' + statusHeight + 'px)', 'important');
     } else if (!spreadsheet && documentContainer && document.getElementById('toolbar-down')) {
       documentContainer.style.setProperty('bottom', statusHeight + 'px', 'important');
       documentContainer.style.setProperty('height', 'calc(100vh - ' + statusHeight + 'px)', 'important');

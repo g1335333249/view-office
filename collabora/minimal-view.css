@@ -80,11 +80,6 @@ html body[data-docType="spreadsheet"] #toolbar-down {
   display: none !important;
 }
 
-html body[data-doctype="presentation"] #toolbar-down,
-html body[data-docType="presentation"] #toolbar-down {
-  display: none !important;
-}
-
 body,
 #main-document-content,
 #document-container {
@@ -133,9 +128,9 @@ html body[data-docType="presentation"] #document-container {
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
-  bottom: 0 !important;
+  bottom: 34px !important;
   width: 100vw !important;
-  height: 100vh !important;
+  height: calc(100vh - 34px) !important;
 }
 
 html body[data-doctype="presentation"] #document-container.parts-preview-document,
@@ -147,9 +142,9 @@ html body[data-docType="presentation"] #document-container.landscape {
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
-  bottom: 0 !important;
+  bottom: 34px !important;
   width: 100vw !important;
-  height: 100vh !important;
+  height: calc(100vh - 34px) !important;
 }
 
 html.vo-has-logo .leaflet-progress-spinner::before {
