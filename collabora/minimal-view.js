@@ -1,7 +1,6 @@
 (function () {
   var renderLoadingReadySince = 0;
   var renderLoadingDismissed = false;
-  var horizontalOverflowGuard = 48;
 
   var selectors = [
     '.main-nav',
@@ -328,11 +327,11 @@
       element.style.setProperty('position', 'fixed', 'important');
       element.style.setProperty('top', '0', 'important');
       element.style.setProperty('left', '0', 'important');
-      element.style.setProperty('right', horizontalOverflowGuard + 'px', 'important');
+      element.style.setProperty('right', '0', 'important');
       element.style.setProperty('bottom', '0', 'important');
       element.style.setProperty('box-sizing', 'border-box', 'important');
       element.style.setProperty('width', 'auto', 'important');
-      element.style.setProperty('max-width', 'calc(100% - ' + horizontalOverflowGuard + 'px)', 'important');
+      element.style.setProperty('max-width', '100%', 'important');
       element.style.setProperty('height', '100vh', 'important');
       element.style.setProperty('margin', '0', 'important');
       element.style.setProperty('overflow-x', 'hidden', 'important');
@@ -350,7 +349,7 @@
       if (!element) return;
       element.style.setProperty('box-sizing', 'border-box', 'important');
       element.style.setProperty('width', 'auto', 'important');
-      element.style.setProperty('max-width', 'calc(100% - ' + horizontalOverflowGuard + 'px)', 'important');
+      element.style.setProperty('max-width', '100%', 'important');
       element.style.setProperty('overflow-x', 'hidden', 'important');
     });
 
@@ -365,11 +364,11 @@
       });
       documentContainer.style.setProperty('top', '0', 'important');
       documentContainer.style.setProperty('left', '0', 'important');
-      documentContainer.style.setProperty('right', horizontalOverflowGuard + 'px', 'important');
+      documentContainer.style.setProperty('right', '0', 'important');
       documentContainer.style.setProperty('bottom', statusHeight + 'px', 'important');
       documentContainer.style.setProperty('box-sizing', 'border-box', 'important');
       documentContainer.style.setProperty('width', 'auto', 'important');
-      documentContainer.style.setProperty('max-width', 'calc(100% - ' + horizontalOverflowGuard + 'px)', 'important');
+      documentContainer.style.setProperty('max-width', '100%', 'important');
       documentContainer.style.setProperty('height', 'calc(100vh - ' + statusHeight + 'px)', 'important');
     } else if (!spreadsheet && documentContainer && document.getElementById('toolbar-down')) {
       documentContainer.style.setProperty('bottom', statusHeight + 'px', 'important');

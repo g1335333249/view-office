@@ -83,7 +83,6 @@ html body[data-docType="spreadsheet"] #toolbar-down {
 
 html,
 body {
-  --vo-horizontal-overflow-guard: 48px;
   overflow-x: hidden !important;
   width: 100% !important;
   max-width: 100% !important;
@@ -96,12 +95,12 @@ body,
   overflow-x: hidden !important;
   top: 0 !important;
   left: 0 !important;
-  right: var(--vo-horizontal-overflow-guard) !important;
+  right: 0 !important;
   bottom: 0 !important;
   box-sizing: border-box !important;
   width: auto !important;
   height: 100vh !important;
-  max-width: calc(100% - var(--vo-horizontal-overflow-guard)) !important;
+  max-width: 100% !important;
   max-height: none !important;
   margin: 0 !important;
 }
@@ -124,7 +123,7 @@ body,
   overflow-x: hidden !important;
   box-sizing: border-box !important;
   width: auto !important;
-  max-width: calc(100% - var(--vo-horizontal-overflow-guard)) !important;
+  max-width: 100% !important;
   margin: 0 !important;
   max-height: none !important;
 }
@@ -144,11 +143,11 @@ html body[data-doctype="presentation"] #document-container,
 html body[data-docType="presentation"] #document-container {
   top: 0 !important;
   left: 0 !important;
-  right: var(--vo-horizontal-overflow-guard) !important;
+  right: 0 !important;
   bottom: 34px !important;
   box-sizing: border-box !important;
   width: auto !important;
-  max-width: calc(100% - var(--vo-horizontal-overflow-guard)) !important;
+  max-width: 100% !important;
   height: calc(100vh - 34px) !important;
 }
 
@@ -160,11 +159,11 @@ html body[data-doctype="presentation"] #document-container.landscape,
 html body[data-docType="presentation"] #document-container.landscape {
   top: 0 !important;
   left: 0 !important;
-  right: var(--vo-horizontal-overflow-guard) !important;
+  right: 0 !important;
   bottom: 34px !important;
   box-sizing: border-box !important;
   width: auto !important;
-  max-width: calc(100% - var(--vo-horizontal-overflow-guard)) !important;
+  max-width: 100% !important;
   height: calc(100vh - 34px) !important;
 }
 
