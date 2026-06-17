@@ -260,35 +260,44 @@
             <article class="card">
               <h2>URL 预览</h2>
               <p>服务端会下载 URL 文件并转交给 Collabora 预览。</p>
-              <pre><code>ViewOffice.preview({
-  container: "#viewer",
-  source: {
-    type: "url",
-    url: "https://example.com/demo.docx",
-    fileName: "demo.docx",
-    fileType: "docx"
-  }
-});</code></pre>
+              <pre><code>let session;
+
+async function openPreview() {
+  session = await ViewOffice.preview({
+    container: "#viewer",
+    source: {
+      type: "url",
+      url: "https://example.com/demo.docx",
+      fileName: "demo.docx",
+      fileType: "docx"
+    }
+  });
+}</code></pre>
             </article>
 
             <article class="card">
               <h2>文件流预览</h2>
               <p>适合业务系统中用户本地上传后直接预览。</p>
-              <pre><code>ViewOffice.preview({
-  container: "#viewer",
-  source: {
-    type: "file",
-    file: file,
-    fileName: file.name,
-    fileType: file.name.split(".").pop()
-  }
-});</code></pre>
+              <pre><code>let session;
+
+async function previewFile(file) {
+  session = await ViewOffice.preview({
+    container: "#viewer",
+    source: {
+      type: "file",
+      file: file,
+      fileName: file.name,
+      fileType: file.name.split(".").pop()
+    }
+  });
+}</code></pre>
             </article>
 
             <article class="card">
               <h2>文件清理</h2>
-              <p>关闭预览或创建新预览时会主动删除服务端临时文件。浏览器异常关闭时，服务端每日清理超过保留时间的文件。</p>
-              <pre><code>ViewOffice.cleanup(session);</code></pre>
+              <p>session 是 ViewOffice.preview() 的返回值。关闭预览或创建新预览时会主动删除服务端临时文件，浏览器异常关闭时服务端会定期兜底清理。</p>
+              <pre><code>await ViewOffice.cleanup(session);
+await ViewOffice.cleanup(session.fileId);</code></pre>
             </article>
           </div>
         </div>

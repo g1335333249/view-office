@@ -105,22 +105,28 @@ docker compose up --build
 
 ```html
 <script>
-  ViewOffice.preview({
-    container: "#viewer",
-    source: {
-      type: "url",
-      url: "https://example.com/demo.docx",
-      fileName: "demo.docx",
-      fileType: "docx"
-    }
-  });
+  let session;
+
+  async function openPreview() {
+    session = await ViewOffice.preview({
+      container: "#viewer",
+      source: {
+        type: "url",
+        url: "https://example.com/demo.docx",
+        fileName: "demo.docx",
+        fileType: "docx"
+      }
+    });
+  }
+
+  openPreview();
 </script>
 ```
 
 通过文件对象预览：
 
 ```js
-await ViewOffice.preview({
+const session = await ViewOffice.preview({
   container: "#viewer",
   source: {
     type: "file",
@@ -135,6 +141,12 @@ await ViewOffice.preview({
 
 ```js
 await ViewOffice.cleanup(session);
+```
+
+其中 `session` 是 `ViewOffice.preview()` 的返回值，包含 `fileId` 和 `viewerUrl` 等信息。清理接口实际使用 `session.fileId`，因此也可以直接调用：
+
+```js
+await ViewOffice.cleanup(session.fileId);
 ```
 
 SDK 在切换新文件预览和页面离开时会尽量自动通知服务端清理临时文件。
