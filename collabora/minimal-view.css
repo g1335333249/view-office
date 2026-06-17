@@ -84,6 +84,7 @@ html body[data-docType="spreadsheet"] #toolbar-down {
 body,
 #main-document-content,
 #document-container {
+  overflow-x: hidden !important;
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
@@ -101,13 +102,15 @@ body,
 }
 
 #document-container {
-  overflow: auto !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
 }
 
 #map,
 .leaflet-container,
 .leaflet-map-pane,
 .leaflet-canvas-container {
+  overflow-x: hidden !important;
   margin: 0 !important;
   max-width: none !important;
   max-height: none !important;

@@ -332,9 +332,15 @@
       element.style.setProperty('width', '100vw', 'important');
       element.style.setProperty('height', '100vh', 'important');
       element.style.setProperty('margin', '0', 'important');
+      element.style.setProperty('overflow-x', 'hidden', 'important');
     });
 
     var documentContainer = document.getElementById('document-container');
+    if (documentContainer) {
+      documentContainer.style.setProperty('overflow-x', 'hidden', 'important');
+      documentContainer.style.setProperty('overflow-y', 'auto', 'important');
+    }
+
     if (spreadsheet && documentContainer) {
       documentContainer.style.setProperty('bottom', statusHeight + 'px', 'important');
       documentContainer.style.setProperty('height', 'calc(100vh - ' + statusHeight + 'px)', 'important');

@@ -31,19 +31,19 @@ fs.writeFileSync(bundlePath, bundle);
 let coolHtml = fs.readFileSync(coolHtmlPath, 'utf8');
 coolHtml = coolHtml.replace(
   /<script>\s*\/\/ Apply dark theme immediately[\s\S]*?<\/script>/,
-  '<script src="dark-theme-init.js?v=18"></script>'
+  '<script src="dark-theme-init.js?v=19"></script>'
 );
 coolHtml = coolHtml.replace(
   '<script src="%SERVICE_ROOT%/browser/%VERSION%/bundle.js" defer></script>',
-  '<script src="%SERVICE_ROOT%/browser/%VERSION%/bundle.js?v=18" defer></script>'
+  '<script src="%SERVICE_ROOT%/browser/%VERSION%/bundle.js?v=19" defer></script>'
 );
 coolHtml = coolHtml.replace(
   '</head>',
   [
-    '<link rel="stylesheet" href="minimal-view.css?v=18" />',
-    '<script src="view-office-branding-runtime.js?v=18"></script>',
-    '<script src="preview-branding.js?v=18"></script>',
-    '<script src="minimal-view.js?v=18"></script>',
+    '<link rel="stylesheet" href="minimal-view.css?v=19" />',
+    '<script src="view-office-branding-runtime.js?v=19"></script>',
+    '<script src="preview-branding.js?v=19"></script>',
+    '<script src="minimal-view.js?v=19"></script>',
     '</head>'
   ].join('\n')
 );
