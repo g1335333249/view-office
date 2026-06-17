@@ -47,6 +47,7 @@ process.on("uncaughtException", (error) => {
 
 const server = http.createServer(async (req, res) => {
   try {
+    res.corsOrigin = req.headers.origin || "";
     const url = new URL(req.url, PUBLIC_URL);
 
     if (req.method === "OPTIONS") {
@@ -207,7 +208,8 @@ async function serveWopiFile(res, fileId) {
   res.writeHead(200, {
     "Content-Type": "application/octet-stream",
     "Content-Length": info.size,
-    "X-WOPI-ItemVersion": record.version
+    "X-WOPI-ItemVersion": record.version,
+    ...corsHeaders(res)
   });
   createReadStream(record.path).pipe(res);
 }
@@ -317,7 +319,7 @@ async function serveStatic(req, res, pathname) {
   try {
     const data = await readFile(filePath);
     const type = mimeTypes[extname(filePath)] || "application/octet-stream";
-    res.writeHead(200, { "Content-Type": type });
+    res.writeHead(200, { "Content-Type": type, ...corsHeaders(res) });
     res.end(data);
   } catch {
     text(res, 404, "Not Found");
@@ -432,27 +434,31 @@ function limitBytes(limit) {
 function json(res, status, payload) {
   res.writeHead(status, {
     "Content-Type": "application/json; charset=utf-8",
-    ...corsHeaders()
+    ...corsHeaders(res)
   });
   res.end(JSON.stringify(payload));
 }
 
 function text(res, status, payload) {
-  res.writeHead(status, { "Content-Type": "text/plain; charset=utf-8", ...corsHeaders() });
+  res.writeHead(status, { "Content-Type": "text/plain; charset=utf-8", ...corsHeaders(res) });
   res.end(payload);
 }
 
 function empty(res, status) {
-  res.writeHead(status, corsHeaders());
+  res.writeHead(status, corsHeaders(res));
   res.end();
 }
 
-function corsHeaders() {
+function corsHeaders(res) {
+  const origin = res && res.corsOrigin ? res.corsOrigin : "*";
   return {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type,Authorization,X-Requested-With",
-    "Access-Control-Allow-Private-Network": "true"
+    "Access-Control-Allow-Origin": origin,
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Allow-Methods": "GET,POST,DELETE,OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type,Authorization,X-Requested-With,X-Requested-By",
+    "Access-Control-Allow-Private-Network": "true",
+    "Access-Control-Max-Age": "86400",
+    "Vary": "Origin"
   };
 }
 
