@@ -58,11 +58,7 @@
       'statusdocpos',
       'slidestatus',
       'pagestatus',
-      'documentstatus',
-      'prevpage',
-      'nextpage',
-      'prevnextbreak',
-      'multi-page-view'
+      'documentstatus'
     ];
 
     return pageTokens.some(function (token) {
@@ -96,6 +92,7 @@
     toolbarDown.style.setProperty('height', '34px', 'important');
     toolbarDown.style.setProperty('min-height', '34px', 'important');
     toolbarDown.style.setProperty('z-index', '30', 'important');
+    toolbarDown.style.setProperty('pointer-events', 'none', 'important');
 
     toolbarDown.querySelectorAll('[id]').forEach(function (element) {
       var id = (element.id || '').toLowerCase();
@@ -108,6 +105,89 @@
     toolbarDown.querySelectorAll('[id]').forEach(function (element) {
       if (isPageStatusElement(element)) showElementChain(element);
     });
+
+    toolbarDown.querySelectorAll('button, a, [role="button"], .unobutton').forEach(function (element) {
+      element.style.setProperty('pointer-events', 'none', 'important');
+      element.setAttribute('tabindex', '-1');
+    });
+  }
+
+  function getRectArray(rect) {
+    if (!rect) return null;
+    if (typeof rect.toArray === 'function') return rect.toArray();
+    if (typeof rect.x1 === 'number' && typeof rect.y1 === 'number' && typeof rect.width === 'number' && typeof rect.height === 'number') {
+      return [rect.x1, rect.y1, rect.width, rect.height];
+    }
+    if (Array.isArray(rect) && rect.length >= 4) return rect;
+    return null;
+  }
+
+  function computeVisibleWriterPage() {
+    if (!window.app || !app.file || !app.file.writer || !app.activeDocument || !app.activeDocument.activeLayout) return null;
+
+    var pageRects = app.file.writer.pageRectangleList;
+    var viewedRect = app.activeDocument.activeLayout.viewedRectangle;
+    var view = getRectArray(viewedRect);
+    if (!pageRects || !pageRects.length || !view) return null;
+
+    var viewTop = view[1];
+    var viewBottom = view[1] + view[3];
+    var viewCenter = viewTop + view[3] / 2;
+    var bestPage = 0;
+    var bestScore = -1;
+
+    for (var index = 0; index < pageRects.length; index += 1) {
+      var rect = getRectArray(pageRects[index]);
+      if (!rect) continue;
+
+      var pageTop = rect[1];
+      var pageBottom = rect[1] + rect[3];
+      if (viewCenter >= pageTop && viewCenter <= pageBottom) {
+        return { current: index + 1, total: pageRects.length };
+      }
+
+      var overlap = Math.max(0, Math.min(viewBottom, pageBottom) - Math.max(viewTop, pageTop));
+      if (overlap > bestScore) {
+        bestScore = overlap;
+        bestPage = index;
+      }
+    }
+
+    return { current: bestPage + 1, total: pageRects.length };
+  }
+
+  function computePresentationPage() {
+    if (!window.app || !app.map || !app.map._docLayer) return null;
+    var docLayer = app.map._docLayer;
+    var total = docLayer._parts || docLayer._pages;
+    var current = typeof docLayer._selectedPart === 'number' ? docLayer._selectedPart + 1 : null;
+    if (!current && typeof docLayer._currentPage === 'number') current = docLayer._currentPage + 1;
+    if (!current || !total) return null;
+    return { current: current, total: total };
+  }
+
+  function setPageStatusText(text) {
+    if (!text) return;
+    ['StatePageNumber', 'SlideStatus', 'PageStatus'].forEach(function (id) {
+      var element = document.getElementById(id);
+      if (!element) return;
+      element.textContent = text;
+      element.setAttribute('title', text);
+      showElementChain(element);
+    });
+  }
+
+  function refreshPageStatus() {
+    var docType = getDocType();
+    if (docType === 'spreadsheet') return;
+
+    var page = docType === 'presentation' ? computePresentationPage() : computeVisibleWriterPage();
+    if (!page) return;
+
+    var label = docType === 'presentation'
+      ? '第 ' + page.current + ' / ' + page.total + ' 页'
+      : '第 ' + page.current + ' / ' + page.total + ' 页';
+    setPageStatusText(label);
   }
 
   function hideChrome() {
@@ -192,13 +272,17 @@
   }
 
   hideChrome();
+  refreshPageStatus();
   hideFeedbackPrompts();
   window.addEventListener('DOMContentLoaded', hideChrome);
+  window.addEventListener('DOMContentLoaded', refreshPageStatus);
   window.addEventListener('DOMContentLoaded', hideFeedbackPrompts);
   window.addEventListener('load', hideChrome);
+  window.addEventListener('load', refreshPageStatus);
   window.addEventListener('load', hideFeedbackPrompts);
   setInterval(function () {
     hideChrome();
+    refreshPageStatus();
     hideFeedbackPrompts();
-  }, 500);
+  }, 250);
 })();

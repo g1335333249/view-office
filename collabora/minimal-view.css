@@ -73,6 +73,7 @@ html body:not([data-doctype="spreadsheet"]):not([data-docType="spreadsheet"]) #t
   min-height: 34px !important;
   z-index: 30 !important;
   overflow: hidden !important;
+  pointer-events: none !important;
 }
 
 html body[data-doctype="spreadsheet"] #toolbar-down,
