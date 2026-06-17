@@ -1,4 +1,7 @@
 (function () {
+  var renderLoadingReadySince = 0;
+  var renderLoadingDismissed = false;
+
   var selectors = [
     '.main-nav',
     '#content-keeper',
@@ -190,6 +193,109 @@
     setPageStatusText(label);
   }
 
+  function getLoadingText() {
+    var config = window.ViewOfficeBranding || {};
+    return config.loadingText || '正在加载，请稍候...';
+  }
+
+  function ensureRenderLoading() {
+    if (renderLoadingDismissed || !document.body) return null;
+
+    var overlay = document.getElementById('view-office-render-loading');
+    if (overlay) return overlay;
+
+    overlay = document.createElement('div');
+    overlay.id = 'view-office-render-loading';
+    overlay.setAttribute('role', 'status');
+    overlay.setAttribute('aria-live', 'polite');
+    overlay.innerHTML = [
+      '<div class="view-office-render-loading-panel">',
+      '<div class="view-office-render-loading-logo" aria-hidden="true"></div>',
+      '<div class="view-office-render-loading-text"></div>',
+      '</div>'
+    ].join('');
+    document.body.appendChild(overlay);
+    return overlay;
+  }
+
+  function hasVisibleBox(element) {
+    if (!element) return false;
+    var rect = element.getBoundingClientRect && element.getBoundingClientRect();
+    return !!rect && rect.width > 8 && rect.height > 8;
+  }
+
+  function isRenderedSurfaceElement(element) {
+    if (!hasVisibleBox(element)) return false;
+
+    if (element.tagName === 'CANVAS') {
+      return element.width > 8 && element.height > 8;
+    }
+
+    if (element.tagName === 'IMG') {
+      return element.complete && (element.naturalWidth > 0 || element.classList.contains('leaflet-tile-loaded'));
+    }
+
+    return true;
+  }
+
+  function hasRenderedDocumentSurface() {
+    if (!window.app || !app.map || !app.map._docLoaded) return false;
+
+    var candidates = document.querySelectorAll([
+      '#map canvas',
+      '#map img.leaflet-tile',
+      '#map .leaflet-tile-loaded',
+      '#document-container canvas',
+      '#document-container img.leaflet-tile',
+      '#document-container .leaflet-tile-loaded',
+      '#spreadsheet-toolbar .spreadsheet-tab'
+    ].join(','));
+
+    for (var index = 0; index < candidates.length; index += 1) {
+      if (isRenderedSurfaceElement(candidates[index])) return true;
+    }
+
+    return false;
+  }
+
+  function hasLoadFailureMessage() {
+    var text = document.body && document.body.textContent;
+    if (!text) return false;
+    return text.indexOf('Failed to load the document') !== -1 ||
+      text.indexOf('This document is either malformed') !== -1 ||
+      text.indexOf('The document could not be loaded') !== -1;
+  }
+
+  function updateRenderLoading() {
+    var overlay = ensureRenderLoading();
+    if (!overlay) return;
+
+    var textElement = overlay.querySelector('.view-office-render-loading-text');
+    if (textElement) textElement.textContent = getLoadingText();
+
+    if (hasLoadFailureMessage()) {
+      overlay.style.setProperty('display', 'none', 'important');
+      renderLoadingDismissed = true;
+      return;
+    }
+
+    if (hasRenderedDocumentSurface()) {
+      if (!renderLoadingReadySince) renderLoadingReadySince = Date.now();
+      if (Date.now() - renderLoadingReadySince >= 600) {
+        overlay.classList.add('is-hidden');
+        renderLoadingDismissed = true;
+        setTimeout(function () {
+          if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        }, 260);
+      }
+      return;
+    }
+
+    renderLoadingReadySince = 0;
+    overlay.classList.remove('is-hidden');
+    overlay.style.setProperty('display', 'flex', 'important');
+  }
+
   function hideChrome() {
     var spreadsheet = isSpreadsheet();
     var presentation = isPresentation();
@@ -271,16 +377,20 @@
     });
   }
 
+  updateRenderLoading();
   hideChrome();
   refreshPageStatus();
   hideFeedbackPrompts();
+  window.addEventListener('DOMContentLoaded', updateRenderLoading);
   window.addEventListener('DOMContentLoaded', hideChrome);
   window.addEventListener('DOMContentLoaded', refreshPageStatus);
   window.addEventListener('DOMContentLoaded', hideFeedbackPrompts);
+  window.addEventListener('load', updateRenderLoading);
   window.addEventListener('load', hideChrome);
   window.addEventListener('load', refreshPageStatus);
   window.addEventListener('load', hideFeedbackPrompts);
   setInterval(function () {
+    updateRenderLoading();
     hideChrome();
     refreshPageStatus();
     hideFeedbackPrompts();
