@@ -20,13 +20,14 @@ COPY collabora/minimal-view.js /usr/share/coolwsd/browser/dist/minimal-view.js
 COPY collabora/preview-branding.js /usr/share/coolwsd/browser/dist/preview-branding.js
 COPY collabora/dark-theme-init.js /usr/share/coolwsd/browser/dist/dark-theme-init.js
 COPY collabora/default-loading-logo.svg /usr/share/coolwsd/browser/dist/default-loading-logo.svg
+COPY collabora/lc_sr20006.svg /usr/share/coolwsd/browser/dist/images/lc_sr20006.svg
 COPY collabora/patch-collabora.js /tmp/patch-collabora.js
 COPY scripts/start-all.sh /usr/local/bin/start-all.sh
 
 RUN node /tmp/patch-collabora.js \
   && cat /tmp/minimal-view.css >> /usr/share/coolwsd/browser/dist/bundle.css \
   && mkdir -p /data \
-  && chown -R cool:cool /app /data /usr/share/coolwsd/browser/dist/welcome /usr/share/coolwsd/browser/dist/minimal-view.css /usr/share/coolwsd/browser/dist/minimal-view.js /usr/share/coolwsd/browser/dist/preview-branding.js /usr/share/coolwsd/browser/dist/dark-theme-init.js /usr/share/coolwsd/browser/dist/default-loading-logo.svg \
+  && chown -R cool:cool /app /data /usr/share/coolwsd/browser/dist/welcome /usr/share/coolwsd/browser/dist/minimal-view.css /usr/share/coolwsd/browser/dist/minimal-view.js /usr/share/coolwsd/browser/dist/preview-branding.js /usr/share/coolwsd/browser/dist/dark-theme-init.js /usr/share/coolwsd/browser/dist/default-loading-logo.svg /usr/share/coolwsd/browser/dist/images/lc_sr20006.svg \
   && chmod +x /usr/local/bin/start-all.sh
 
 ENV NODE_ENV=production
