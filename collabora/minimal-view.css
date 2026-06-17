@@ -152,15 +152,10 @@ html body[data-docType="presentation"] #document-container.landscape {
   height: 100vh !important;
 }
 
-html.vo-no-logo .leaflet-progress-spinner::before {
-  display: none !important;
-  width: 0 !important;
-  height: 0 !important;
-  margin: 0 !important;
-  background: none !important;
-}
-
 html.vo-has-logo .leaflet-progress-spinner::before {
+  animation: none !important;
+  position: static !important;
+  bottom: auto !important;
   width: 100% !important;
   height: 72px !important;
   margin: 0 0 12px !important;

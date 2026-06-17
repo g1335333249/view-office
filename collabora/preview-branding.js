@@ -3,26 +3,21 @@
   var loadingText = config.loadingText || '正在加载，请稍候...';
   var brandName = config.brandName || '';
   var logoUrl = config.logoUrl || '';
+  var effectiveLogoUrl = logoUrl || 'default-loading-logo.svg';
 
   window.brandProductName = brandName || 'View Office';
   window.brandProductURL = config.brandUrl || '#';
 
   document.documentElement.classList.add(brandName ? 'vo-has-brand' : 'vo-no-brand');
+  document.documentElement.classList.add(logoUrl ? 'vo-custom-logo' : 'vo-default-logo');
 
-  if (logoUrl) {
-    window.logoURL = logoUrl;
-    document.documentElement.classList.add('vo-has-logo');
-    document.documentElement.style.setProperty('--vo-spinner-logo', 'url("' + cssUrlEscape(logoUrl) + '")');
-  } else {
-    window.logoURL = '';
-    document.documentElement.classList.add('vo-no-logo');
-  }
+  window.logoURL = effectiveLogoUrl;
+  document.documentElement.classList.add('vo-has-logo');
+  document.documentElement.style.setProperty('--vo-spinner-logo', 'url("' + cssUrlEscape(effectiveLogoUrl) + '")');
 
   function applyLoadingBranding() {
     document.querySelectorAll('.leaflet-progress-spinner').forEach(function (element) {
-      if (logoUrl) {
-        element.style.setProperty('--vo-spinner-logo', 'url("' + cssUrlEscape(logoUrl) + '")');
-      }
+      element.style.setProperty('--vo-spinner-logo', 'url("' + cssUrlEscape(effectiveLogoUrl) + '")');
     });
 
     document.querySelectorAll('.leaflet-progress-label.brand-label').forEach(function (element) {

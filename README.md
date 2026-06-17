@@ -192,7 +192,7 @@ DELETE /api/preview/:fileId/cleanup
 | `IGNORE_HTTPS_ERRORS` | `true` | URL 下载时是否忽略不受信任 HTTPS 证书 |
 | `PREVIEW_TTL_MS` | `86400000` | 临时文件保留时间，默认 24 小时 |
 | `CLEANUP_INTERVAL_MS` | `86400000` | 遗留文件定时清理间隔，默认 24 小时 |
-| `VIEW_OFFICE_LOGO_URL` | 空 | 自定义加载页 logo |
+| `VIEW_OFFICE_LOGO_URL` | 空 | 自定义加载页 logo；未设置时使用内置默认 loading logo |
 | `VIEW_OFFICE_BRAND_NAME` | 空 | 自定义加载页品牌名 |
 | `VIEW_OFFICE_LOADING_TEXT` | `正在加载，请稍候...` | 自定义加载文案 |
 | `COLLABORA_LOAD_TIMEOUT_SECS` | `600` | Collabora 文档加载超时 |
